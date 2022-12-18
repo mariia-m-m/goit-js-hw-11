@@ -11,8 +11,8 @@ body {
   color: #212121;
   line-height: 1.5;
 
-    min-height: 35vh;
-    min-width: 35vw;
+    min-height: 40vh;
+    min-width: 40vw;
     background: #fafafa;
     position: relative;
 
@@ -66,5 +66,5 @@ button {
 }
 
 button:hover {
-  border: 5px solid;
+  border: 5px solid gold;
 }

@@ -1,25 +1,83 @@
 import './css/styles.css';
-// import debounce from 'lodash.debounce'
-// import { fetchCountries } from "./js/fetchCountries";
 // import Notiflix from 'notiflix';
 
-// const DEBOUNCE_DELAY = 300;
-// const countryList = document.querySelector('.country-list');
-// const countryInfo = document.querySelector('.country-info');
-// const input = document.querySelector("input#search-box");
+const BASE_URL = 'https://pixabay.com/api/';
+const gallery = document.querySelector('.gallery');
+const form = document.querySelector("#search-form");
+const input = document.querySelector("input")
 
-// input.addEventListener(
-//   'input',
-//     debounce(onSearch, DEBOUNCE_DELAY)
-// );
 
-// function onSearch(event) {
-//      event.preventDefault()
-//     const searchQuery = event.target.value.trim();
-//     updateInfo();
-//     if (!searchQuery) {
-//         return;
+form.addEventListener("submit", onSearch);
+
+function onSearch(event) {
+  event.preventDefault();
+  const searchQuery = event.currentTarget.elements.searchQuery.value.trim();
+  console.log(searchQuery)
+
+
+  const fetchPictures = async () => {
+    const response = await fetch(`${BASE_URL}?key=32162387-0406b1794dd4cc3a4c661920a&q=${searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40`);
+    const fetchedPictures = await response.json();
+    console.log(fetchedPictures)
+  }
+
+  fetchPictures()
+}
+// PROSTO
+  // if (searchQuery) {
+  //   gallery.innerHTML = addAndRenderPicture + '';
+
+  // }
+ 
+
+// ASYNC
+//   async function addAndRenderPictures(searchQuery) {
+//     try {
+//       const pictures = await addAndRenderPictures()
+//       console.log(pictures)
+//       updateInfo(pictures);
 //     }
+//     catch {
+//       console.error(
+//         console.log(error)
+//       );
+//     }
+//   }
+// }
+
+// function addAndRenderPicture(pictures) {
+//     return pictures.map(picture => {
+//         return `
+//   <div class="photo-card">
+//   <img src="${picture.pageURL}." alt="${picture.tags}" loading="lazy" />
+//   <div class="info">
+//     <p class="${picture.likes}">
+//       <b>Likes</b>
+//     </p>
+//     <p class="${picture.vievs}">
+//       <b>Views</b>
+//     </p>
+//     <p class="${picture.comments}">
+//       <b>Comments</b>
+//     </p>
+//     <p class="${picture.downloads}">
+//       <b>Downloads</b>
+//     </p>
+//   </div>
+// </div>`;
+//     })
+//       .join('');
+// }
+
+
+
+
+
+
+
+
+
+
 
 //     fetchCountries(searchQuery)
 //         .then(countries => {
@@ -41,21 +99,7 @@ import './css/styles.css';
 //         })
 // }
 
-// function renderContryCard(countries) {
-//   return countries
-//     .map(country => {
-//       return `
-//       <li>
-//         <img src="${country.flags.svg}" alt="Flag of ${
-//         country.name.official}" width="30" hight="20">
-//            <b>${country.name.official}</b></p>
-//               <p><b>Capital</b>: ${country.capital}</p>
-//               <p><b>Population</b>: ${country.population}</p>
-//               <p><b>Languages</b>: ${Object.values(
-//                 country.languages)} </p></li>`;
-//     })
-//       .join('');
-// }
+// 
 
 // function renderCountriesList(countries) {
 //   return countries
@@ -68,10 +112,7 @@ import './css/styles.css';
 //     .join('');
 // }
 
-// function updateInfo(list = '', info = '') {
-//   countryList.innerHTML = list;
-//   countryInfo.innerHTML = info;
-// }
+
 
 // function onFetchError(error) {
 //   Notiflix.Notify.failure('Oops, there is no country with that name');
