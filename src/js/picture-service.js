@@ -10,8 +10,8 @@ export default class PicturesApiService {
     console.log(this)
     const response = await fetch(`${BASE_URL}?key=32162387-0406b1794dd4cc3a4c661920a&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${this.page}`);
         const fetchedPictures = await response.json();
-        console.log(fetchedPictures)
-        return fetchedPictures
+        
+       return fetchedPictures.hits
       
 }
 

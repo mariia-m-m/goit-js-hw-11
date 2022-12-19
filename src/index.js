@@ -33,7 +33,7 @@ async function onLoadMore(event){
 }
 
 function addPictures(pictures) {
-return pictures.map((picture) => {
+return pictures.map(picture => {
       return `<div class="photo-card">
   <img src="${picture.pageURL}." alt="${picture.tags}" loading="lazy" />
   <div class="info">
