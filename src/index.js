@@ -1,73 +1,60 @@
 import './css/styles.css';
-// import Notiflix from 'notiflix';
+import Notiflix from 'notiflix';
+import PicturesApiService from './js/picture-service'
 
-const BASE_URL = 'https://pixabay.com/api/';
 const gallery = document.querySelector('.gallery');
 const form = document.querySelector("#search-form");
-const input = document.querySelector("input")
+const input = document.querySelector("input");
+const btnLoadMore = document.querySelector('.load-more')
+
+
+const picturesApiService = new PicturesApiService;
+
 
 
 form.addEventListener("submit", onSearch);
 
 function onSearch(event) {
   event.preventDefault();
-  const searchQuery = event.currentTarget.elements.searchQuery.value.trim();
-  console.log(searchQuery)
-
-
-  const fetchPictures = async () => {
-    const response = await fetch(`${BASE_URL}?key=32162387-0406b1794dd4cc3a4c661920a&q=${searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40`);
-    const fetchedPictures = await response.json();
-    console.log(fetchedPictures)
+  picturesApiService.query = event.currentTarget.elements.searchQuery.value.trim();
+  picturesApiService.resetPage();
+  picturesApiService.fetchPictures()
+    .then(pictures => gallery.insertAdjacentHTML('beforeend', addPictures(pictures)))
   }
 
-  fetchPictures()
-}
-// PROSTO
-  // if (searchQuery) {
-  //   gallery.innerHTML = addAndRenderPicture + '';
+  // console.log(picturesApiService.query)
 
-  // }
+btnLoadMore.addEventListener('click', onLoadMore)
+
+async function onLoadMore(event){
+  picturesApiService.fetchPictures()
+    .then(pictures => gallery.insertAdjacentHTML('beforeend', addPictures(pictures)));
+  picturesApiService.page+=1
+}
+
+function addPictures(pictures) {
+return pictures.map((picture) => {
+      return `<div class="photo-card">
+  <img src="${picture.pageURL}." alt="${picture.tags}" loading="lazy" />
+  <div class="info">
+    <p class="${picture.likes}">
+      <b>Likes</b>
+    </p>
+    <p class="${picture.vievs}">
+      <b>Views</b>
+    </p>
+    <p class="${picture.comments}">
+      <b>Comments</b>
+    </p>
+    <p class="${picture.downloads}">
+      <b>Downloads</b>
+    </p>
+  </div>
+</div>`})
+    .join('');
+  }
  
 
-// ASYNC
-//   async function addAndRenderPictures(searchQuery) {
-//     try {
-//       const pictures = await addAndRenderPictures()
-//       console.log(pictures)
-//       updateInfo(pictures);
-//     }
-//     catch {
-//       console.error(
-//         console.log(error)
-//       );
-//     }
-//   }
-// }
-
-// function addAndRenderPicture(pictures) {
-//     return pictures.map(picture => {
-//         return `
-//   <div class="photo-card">
-//   <img src="${picture.pageURL}." alt="${picture.tags}" loading="lazy" />
-//   <div class="info">
-//     <p class="${picture.likes}">
-//       <b>Likes</b>
-//     </p>
-//     <p class="${picture.vievs}">
-//       <b>Views</b>
-//     </p>
-//     <p class="${picture.comments}">
-//       <b>Comments</b>
-//     </p>
-//     <p class="${picture.downloads}">
-//       <b>Downloads</b>
-//     </p>
-//   </div>
-// </div>`;
-//     })
-//       .join('');
-// }
 
 
 
