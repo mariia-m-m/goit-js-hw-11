@@ -17,6 +17,9 @@ form.addEventListener("submit", onSearch);
 function onSearch(event) {
   event.preventDefault();
   picturesApiService.query = event.currentTarget.elements.searchQuery.value.trim();
+  if (picturesApiService.query === '') {
+    onFetchError()
+  }
   picturesApiService.resetPage();
   picturesApiService.fetchPictures()
     .then(pictures => gallery.insertAdjacentHTML('beforeend', addPictures(pictures)))
@@ -37,17 +40,17 @@ return pictures.map(picture => {
       return `<div class="photo-card">
   <img src="${picture.webformatURL}." alt="${picture.tags}" loading="lazy" />
   <div class="info">
-    <p class="${picture.likes}">
-      <b>Likes</b>
+    <p class="info-item">
+      <b>${picture.likes}likes</b>
     </p>
-    <p class="${picture.vievs}">
-      <b>Views</b>
+    <p class="info-item">
+      <b>${picture.views} views</b>
     </p>
-    <p class="${picture.comments}">
-      <b>Comments</b>
+    <p class="info-item">
+      <b>${picture.comments} comments</b>
     </p>
-    <p class="${picture.downloads}">
-      <b>Downloads</b>
+    <p class="info-item">
+      <b>${picture.downloads} downloads</b>
     </p>
   </div>
 </div>`})
@@ -55,9 +58,18 @@ return pictures.map(picture => {
   }
  
 
+function onFetchError(error) {
+  Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+}
 
+// const { height: cardHeight } = document
+//   .querySelector(".gallery")
+//   .firstElementChild.getBoundingClientRect();
 
-
+// window.scrollBy({
+//   top: cardHeight * 2,
+//   behavior: "smooth",
+// });
 
 
 
