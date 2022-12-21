@@ -4,7 +4,6 @@ import PicturesApiService from './js/picture-service'
 
 const gallery = document.querySelector('.gallery');
 const form = document.querySelector("#search-form");
-const input = document.querySelector("input");
 const btnLoadMore = document.querySelector('.load-more')
 
 
@@ -15,24 +14,44 @@ const picturesApiService = new PicturesApiService;
 form.addEventListener("submit", onSearch);
 
 function onSearch(event) {
+  picturesApiService.addAndRenderPictures()
   event.preventDefault();
+  cleanGallery();
   picturesApiService.query = event.currentTarget.elements.searchQuery.value.trim();
-  if (picturesApiService.query === '') {
-    onFetchError()
-  }
   picturesApiService.resetPage();
-  picturesApiService.fetchPictures()
-    .then(pictures => gallery.insertAdjacentHTML('beforeend', addPictures(pictures)))
+  if (picturesApiService.query === '') {
+    gallery.innerHTML = '';
+    onFetchError()
+  
   }
-
+  
+  picturesApiService.fetchPictures()
+    .then(pictures => {
+      cleanGallery();
+      appendPictures(pictures);
+    
+})
+}
+function appendPictures(pictures) {
+    gallery.insertAdjacentHTML('beforeend', addPictures(pictures))
+}
+  
+function cleanGallery() {
+  gallery.innerHTML = '';
+}
   // console.log(picturesApiService.query)
 
-btnLoadMore.addEventListener('click', onLoadMore)
+btnLoadMore.addEventListener('click', onLoadMore);
+
 
 async function onLoadMore(event){
   picturesApiService.fetchPictures()
-    .then(pictures => gallery.insertAdjacentHTML('beforeend', addPictures(pictures)));
-  picturesApiService.page+=1
+    .then(pictures => {{
+      cleanGallery();
+      appendPictures(pictures);
+    
+}});
+  picturesApiService.page += 1;
 }
 
 function addPictures(pictures) {
@@ -54,14 +73,18 @@ return pictures.map(picture => {
     </p>
   </div>
 </div>`})
-    .join('');
+  .join('');
   }
  
 
 function onFetchError(error) {
+  
   Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+
 }
 
+
+// function setScroll() {
 // const { height: cardHeight } = document
 //   .querySelector(".gallery")
 //   .firstElementChild.getBoundingClientRect();
@@ -70,6 +93,8 @@ function onFetchError(error) {
 //   top: cardHeight * 2,
 //   behavior: "smooth",
 // });
+// }
+// setScroll()
 
 
 

@@ -3,6 +3,7 @@
 }
 
 body {
+
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -11,10 +12,9 @@ body {
   color: #212121;
   line-height: 1.5;
 
-    min-height: 40vh;
-    min-width: 40vw;
+    max-height: 100vh;
+    max-width: 100vw;
     background: #fafafa;
-    position: relative;
 
   /* My style */
     overflow: hidden;
@@ -24,27 +24,25 @@ body {
     background-position: center;
 }
 #search-form {
-  font: inherit;
-  padding: 8px;
- 
-  margin-bottom: 16px;
- 
-  display: block;
-    padding: 50px;
-    width: 100%;
-    color: white;
-    margin-right: auto;
+ margin-top: 50px;
     margin-left: auto;
-    text-align: center;
+      margin-right: auto;
+
 }
  
 input{
+  display: flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 8px;
+    margin-bottom: 24px;
     border: 5px solid darkblue;
       border-radius: 4px; 
       -webkit-border-radius: 4px; 
       -moz-border-radius: 4px; 
       -khtml-border-radius: 4px; 
-      background: white !important; 
+      background: white; 
       outline: none; 
       height: 35px;
       width: 200px; 
@@ -57,7 +55,9 @@ border: 5px solid gold;
 
 }
 button {
-
+display: block;
+margin-left: auto;
+margin-right: auto;
   color: white;
   background: darkblue;
   height: 30px;
@@ -67,4 +67,17 @@ button {
 
 button:hover {
   border: 5px solid gold;
+}
+
+.gallery{
+display: grid;
+grid-template-columns: repeat(auto-fill,minmax(300px,1fr));
+grid-gap:20px;
+padding: 0;
+margin: 0;
+list-style: none;
+max-width: calc(100vw-80px);
+margin-left: auto;
+margin-right: auto;
+margin-bottom: 30px;
 }
