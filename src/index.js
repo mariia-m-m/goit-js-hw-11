@@ -4,11 +4,12 @@ import PicturesApiService from './js/picture-service'
 
 const gallery = document.querySelector('.gallery');
 const form = document.querySelector("#search-form");
-const btnLoadMore = document.querySelector('.load-more')
-
+const btnLoadMore = document.querySelector('.load-more');
+const photoCard = document.querySelector(".photo-card");
+let currentimg = 6;
 
 const picturesApiService = new PicturesApiService;
-
+ 
 
 
 form.addEventListener("submit", onSearch);
@@ -44,23 +45,24 @@ function cleanGallery() {
 btnLoadMore.addEventListener('click', onLoadMore);
 
 
-async function onLoadMore(event){
+async function onLoadMore(event) {
   picturesApiService.fetchPictures()
-    .then(pictures => {{
-      cleanGallery();
-      appendPictures(pictures);
-    
-}});
-  picturesApiService.page += 1;
+    .then(pictures => {
+      {
+        cleanGallery();
+        appendPictures(pictures);
+         
+      }
+    });
+ 
 }
-
 function addPictures(pictures) {
 return pictures.map(picture => {
       return `<div class="photo-card">
   <img src="${picture.webformatURL}." alt="${picture.tags}" loading="lazy" />
   <div class="info">
     <p class="info-item">
-      <b>${picture.likes}likes</b>
+      <b>${picture.likes} likes</b>
     </p>
     <p class="info-item">
       <b>${picture.views} views</b>
@@ -83,6 +85,18 @@ function onFetchError(error) {
 
 }
 
+// function showPictures() {
+//   for (let i = currentimg; i < currentimg + 6; i += 1){
+//     if (photoCard[i]) {
+//       photoCard[i].style.display = 'block';
+//     }
+      
+//   }
+//   currentimg += 6;
+//   if (currentimg >= photoCard.length) {
+//     event.target.style.display = 'none';
+//   }
+// }
 
 // function setScroll() {
 // const { height: cardHeight } = document
