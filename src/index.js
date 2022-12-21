@@ -1,3 +1,4 @@
+
 import './css/styles.css';
 import Notiflix from 'notiflix';
 import PicturesApiService from './js/picture-service'
@@ -5,59 +6,62 @@ import PicturesApiService from './js/picture-service'
 const gallery = document.querySelector('.gallery');
 const form = document.querySelector("#search-form");
 const btnLoadMore = document.querySelector('.load-more');
-const photoCard = document.querySelector(".photo-card");
-let currentimg = 6;
+
+let currentPage = 1;
+let currentHits = 0;
 
 const picturesApiService = new PicturesApiService;
- 
-
 
 form.addEventListener("submit", onSearch);
 
-function onSearch(event) {
-  picturesApiService.addAndRenderPictures()
+async function onSearch(event) {
   event.preventDefault();
-  cleanGallery();
   picturesApiService.query = event.currentTarget.elements.searchQuery.value.trim();
-  picturesApiService.resetPage();
-  if (picturesApiService.query === '') {
-    gallery.innerHTML = '';
+  currentPage = 1;
+
+ if (picturesApiService.query === '') {
     onFetchError()
-  
   }
+
+  const response = await picturesApiService.fetchPictures(picturesApiService.query, currentPage);
+  
+  currentHits = response.hits.length;
+
+  if (response.totalHits > 40) {
+    btnLoadMore.classList.remove('is-hidden');
+  } else {
+    btnLoadMore.classList.add('is-hidden');
+  }
+
+  try {
+    if (response.totalHits > 0) {
+      Notify.success(`Hooray! We found ${response.totalHits} images.`);
+      cleanGallery();
+      picturesApiService.addAndRenderPictures(response.hits)
+    
+    }
+
+    if (response.totalHits === 0) {
+      cleanGallery();
+      onFetchError();
+      btnLoadMore.classList.add('is-hidden');
+    }
+  }
+    catch (error) {
+      console.log(error)
+    }
+  
+  picturesApiService.resetPage();
   
   picturesApiService.fetchPictures()
     .then(pictures => {
       cleanGallery();
-      appendPictures(pictures);
-    
-})
+      appendPictures(response.hits);
+    })
 }
-function appendPictures(pictures) {
-    gallery.insertAdjacentHTML('beforeend', addPictures(pictures))
-}
-  
-function cleanGallery() {
-  gallery.innerHTML = '';
-}
-  // console.log(picturesApiService.query)
 
-btnLoadMore.addEventListener('click', onLoadMore);
-
-
-async function onLoadMore(event) {
-  picturesApiService.fetchPictures()
-    .then(pictures => {
-      {
-        cleanGallery();
-        appendPictures(pictures);
-         
-      }
-    });
- 
-}
 function addPictures(pictures) {
-return pictures.map(picture => {
+  const markup=pictures.map(picture => {
       return `<div class="photo-card">
   <img src="${picture.webformatURL}." alt="${picture.tags}" loading="lazy" />
   <div class="info">
@@ -75,89 +79,42 @@ return pictures.map(picture => {
     </p>
   </div>
 </div>`})
-  .join('');
+    .join('');
+  
+  gallery.insertAdjacentHTML('beforeend', markup);
+}
+
+function appendPictures(pictures) {
+addPictures(pictures)
+}
+
+
+function cleanGallery() {
+  gallery.innerHTML = '';
+}
+  // console.log(picturesApiService.query)
+
+btnLoadMore.addEventListener('click', onLoadMore);
+
+
+async function onLoadMore(event) {
+  currentPage += 1;
+  const response = await picturesApiService.fetchPictures(picturesApiService.query, currentPage);
+  picturesApiService.resetPage();
+  picturesApiService.fetchPictures().then(pictures => {appendPictures(response.hits)})
+  currentHits += response.hits.length;
+  if (currentHits === response.totalHits) {
+    btnLoadMore.classList.add('is-hidden');
+    alertEndOfSearch();
+    alert("We're sorry, but you've reached the end of search results.")
+    gallery.insertAdjacentHTML('beforeend',(`<p> We're sorry, but you've reached the end of search results.</p>`).join(''))
   }
- 
+}
 
 function onFetchError(error) {
   
   Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
-
 }
-
-// function showPictures() {
-//   for (let i = currentimg; i < currentimg + 6; i += 1){
-//     if (photoCard[i]) {
-//       photoCard[i].style.display = 'block';
-//     }
-      
-//   }
-//   currentimg += 6;
-//   if (currentimg >= photoCard.length) {
-//     event.target.style.display = 'none';
-//   }
-// }
-
-// function setScroll() {
-// const { height: cardHeight } = document
-//   .querySelector(".gallery")
-//   .firstElementChild.getBoundingClientRect();
-
-// window.scrollBy({
-//   top: cardHeight * 2,
-//   behavior: "smooth",
-// });
-// }
-// setScroll()
-
-
-
-
-
-
-
-
-//     fetchCountries(searchQuery)
-//         .then(countries => {
-//             console.log(countries)
-//             if (countries.length > 10) {
-//                Notiflix.Notify.info(
-//           'Too many matches found. Please enter a more specific name.')
-//             } else if(countries.length >= 2 && countries.length <= 10) {
-//         const markUp = renderCountriesList(countries);
-//         updateInfo('',markUp);
-//       } else if (countries.length === 1) {
-//         const markUp = renderContryCard(countries);
-//         updateInfo('', markUp);
-//       }
-//     })
-//         .catch(error => {
-//             console.log(error);
-//             onFetchError()
-//         })
-// }
-
-// 
-
-// function renderCountriesList(countries) {
-//   return countries
-//     .map(country => {
-//       return `<li>
-//         <img src="${country.flags.svg}" alt="Flag of ${country.name.official}" width="30" hight="20">
-//              <b>${country.name.official}</p>
-//     </li>`;
-//     })
-//     .join('');
-// }
-
-
-
-// function onFetchError(error) {
-//   Notiflix.Notify.failure('Oops, there is no country with that name');
-// }
-// input.addEventListener("keyup", onSubmit)
-
-
-
-//    
-    
+function alertEndOfSearch() {
+  Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+}
