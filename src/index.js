@@ -87,33 +87,26 @@ function addPictures(pictures) {
 function cleanGallery() {
   gallery.innerHTML = '';
 }
-  // console.log(picturesApiService.query)
+console.log(picturesApiService.query)
 
 btnLoadMore.addEventListener('click', onLoadMore);
 
 
 async function onLoadMore(event) {
  
-  const response = await picturesApiService.fetchPictures(picturesApiService.query, picturesApiService.page += 1);
+  picturesApiService.page += 1;
+  const response = await picturesApiService.fetchPictures(picturesApiService.query, picturesApiService.page);
   addPictures(response.hits);
   currentHits += response.hits.length;
   console.log(response);
 
-  //  const page = picturesApiService.page += 1;
-  // const totalPages = Math.ceil(response.totalHits / 40);
-  //    if (page>=totalPages&&totalPages===1) {
-  //   btnLoadMore.classList.add('is-hidden');
-  //   alert("We're sorry, but you've reached the end of search results.");
-  //   alertEndOfSearch();
-  
-    
-    if (currentHits>response.totalHits) {
+  const totalPages = Math.ceil(response.totalHits / 40);
+  if (picturesApiService.page >= totalPages) {
     btnLoadMore.classList.add('is-hidden');
     alertEndOfSearch();
-    alert("We're sorry, but you've reached the end of search results.")
-    gallery.insertAdjacentHTML('beforeend',`<p> We're sorry, but you've reached the end of search results.</p>`.join(''))
   }
 }
+
 
 function onFetchError(error) {
   
