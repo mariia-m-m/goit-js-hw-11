@@ -20,9 +20,10 @@ async function onSearch(event) {
   picturesApiService.query = event.currentTarget.elements.searchQuery.value.trim();
   picturesApiService.page = 1;
 
- if (picturesApiService.query === '') {
+  if (picturesApiService.query === '') {
+  cleanGallery();
    onFetchError()
-   cleanGallery();
+  
   }
 
   const response = await picturesApiService.fetchPictures(picturesApiService.query, picturesApiService.page);
@@ -36,16 +37,17 @@ async function onSearch(event) {
   }
 
   try {
-    if (response.totalHits > 0) {
+    if (picturesApiService.query !== '') {
       Notiflix.Notify.success(`Hooray! We found ${response.totalHits} images.`);
       cleanGallery();
      addPictures(response.hits)
     }
 
     if (response.totalHits === 0) {
-      cleanGallery();
-      onFetchError();
+      cleanGallery();   
       btnLoadMore.classList.add('is-hidden');
+      onFetchError();
+      
     }
   }
     catch (error) {
