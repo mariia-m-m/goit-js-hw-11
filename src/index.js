@@ -21,7 +21,8 @@ async function onSearch(event) {
   picturesApiService.page = 1;
 
  if (picturesApiService.query === '') {
-    onFetchError()
+   onFetchError()
+   cleanGallery();
   }
 
   const response = await picturesApiService.fetchPictures(picturesApiService.query, picturesApiService.page);
@@ -36,9 +37,9 @@ async function onSearch(event) {
 
   try {
     if (response.totalHits > 0) {
-      Notify.success(`Hooray! We found ${response.totalHits} images.`);
+      Notiflix.Notify.success(`Hooray! We found ${response.totalHits} images.`);
       cleanGallery();
-      picturesApiService.addAndRenderPictures(response.hits)
+      picturesApiService.addPictures(response.hits)
     }
 
     if (response.totalHits === 0) {
