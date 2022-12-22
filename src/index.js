@@ -39,7 +39,7 @@ async function onSearch(event) {
     if (response.totalHits > 0) {
       Notiflix.Notify.success(`Hooray! We found ${response.totalHits} images.`);
       cleanGallery();
-      picturesApiService.addPictures(response.hits)
+     addPictures(response.hits)
     }
 
     if (response.totalHits === 0) {
@@ -84,10 +84,6 @@ function addPictures(pictures) {
 }
 
 
-
-function cleanGallery() {
-  gallery.innerHTML = '';
-}
 console.log(picturesApiService.query)
 
 btnLoadMore.addEventListener('click', onLoadMore);
@@ -115,4 +111,7 @@ function onFetchError(error) {
 }
 function alertEndOfSearch(error) {
   Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+}
+function cleanGallery() {
+  gallery.innerHTML = '';
 }
