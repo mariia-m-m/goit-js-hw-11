@@ -10,10 +10,11 @@ export default class PicturesApiService {
     }
 
 
- async fetchPictures(value, page) {
+    async fetchPictures(value, page) {
+     console.log(this)
   const filter = `?key=${API_KEY}&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${this.page}`;
 
-  return await axios.get(`${BASE_URL}${filter}`).then(response => response.data);
+     return await axios.get(`${BASE_URL}${filter}`).then(response => response.data);
 }
 
 
@@ -26,15 +27,7 @@ export default class PicturesApiService {
     
     // }
     
-     async addAndRenderPictures() {
-     try {
-
-    }
-    catch (error){
-        console.log(error.message)
-    }
-  }
-
+   
     
 get query(){
     return this.searchQuery;

@@ -7,23 +7,24 @@ const gallery = document.querySelector('.gallery');
 const form = document.querySelector("#search-form");
 const btnLoadMore = document.querySelector('.load-more');
 
-let currentPage = 1;
 let currentHits = 0;
 
 const picturesApiService = new PicturesApiService;
+
+btnLoadMore.classList.add('is-hidden')
 
 form.addEventListener("submit", onSearch);
 
 async function onSearch(event) {
   event.preventDefault();
   picturesApiService.query = event.currentTarget.elements.searchQuery.value.trim();
-  currentPage = 1;
+  picturesApiService.page = 1;
 
  if (picturesApiService.query === '') {
     onFetchError()
   }
 
-  const response = await picturesApiService.fetchPictures(picturesApiService.query, currentPage);
+  const response = await picturesApiService.fetchPictures(picturesApiService.query, picturesApiService.page);
   
   currentHits = response.hits.length;
 
@@ -38,7 +39,6 @@ async function onSearch(event) {
       Notify.success(`Hooray! We found ${response.totalHits} images.`);
       cleanGallery();
       picturesApiService.addAndRenderPictures(response.hits)
-    
     }
 
     if (response.totalHits === 0) {
@@ -53,12 +53,10 @@ async function onSearch(event) {
   
   picturesApiService.resetPage();
   
-  picturesApiService.fetchPictures()
-    .then(pictures => {
       cleanGallery();
-      appendPictures(response.hits);
-    })
-}
+      addPictures(response.hits);
+    }
+
 
 function addPictures(pictures) {
   const markup=pictures.map(picture => {
@@ -84,9 +82,6 @@ function addPictures(pictures) {
   gallery.insertAdjacentHTML('beforeend', markup);
 }
 
-function appendPictures(pictures) {
-addPictures(pictures)
-}
 
 
 function cleanGallery() {
@@ -98,16 +93,25 @@ btnLoadMore.addEventListener('click', onLoadMore);
 
 
 async function onLoadMore(event) {
-  currentPage += 1;
-  const response = await picturesApiService.fetchPictures(picturesApiService.query, currentPage);
-  picturesApiService.resetPage();
-  picturesApiService.fetchPictures().then(pictures => {appendPictures(response.hits)})
+ 
+  const response = await picturesApiService.fetchPictures(picturesApiService.query, picturesApiService.page += 1);
+  addPictures(response.hits);
   currentHits += response.hits.length;
-  if (currentHits === response.totalHits) {
+  console.log(response);
+
+  //  const page = picturesApiService.page += 1;
+  // const totalPages = Math.ceil(response.totalHits / 40);
+  //    if (page>=totalPages&&totalPages===1) {
+  //   btnLoadMore.classList.add('is-hidden');
+  //   alert("We're sorry, but you've reached the end of search results.");
+  //   alertEndOfSearch();
+  
+    
+    if (currentHits>response.totalHits) {
     btnLoadMore.classList.add('is-hidden');
     alertEndOfSearch();
     alert("We're sorry, but you've reached the end of search results.")
-    gallery.insertAdjacentHTML('beforeend',(`<p> We're sorry, but you've reached the end of search results.</p>`).join(''))
+    gallery.insertAdjacentHTML('beforeend',`<p> We're sorry, but you've reached the end of search results.</p>`.join(''))
   }
 }
 
@@ -115,6 +119,6 @@ function onFetchError(error) {
   
   Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
 }
-function alertEndOfSearch() {
+function alertEndOfSearch(error) {
   Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
 }
