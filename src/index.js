@@ -7,7 +7,6 @@ const gallery = document.querySelector('.gallery');
 const form = document.querySelector("#search-form");
 const btnLoadMore = document.querySelector('.load-more');
 
-let currentHits = 0;
 
 const picturesApiService = new PicturesApiService;
 
