@@ -18,46 +18,36 @@ async function onSearch(event) {
   event.preventDefault();
   picturesApiService.query = event.currentTarget.elements.searchQuery.value.trim();
   picturesApiService.page = 1;
-
-  if (picturesApiService.query === '') {
-  cleanGallery();
-   onFetchError()
-  
-  }
-
-  const response = await picturesApiService.fetchPictures(picturesApiService.query, picturesApiService.page);
-  
-  currentHits = response.hits.length;
-
-  if (response.totalHits > 40) {
+    
+  try {
+    const response = await picturesApiService.fetchPictures();
+     if (response.totalHits > 40) {
     btnLoadMore.classList.remove('is-hidden');
   } else {
     btnLoadMore.classList.add('is-hidden');
+     }
+    
+  if (picturesApiService.query !== '') {
+    Notiflix.Notify.success(`Hooray! We found ${response.totalHits} images.`);
+    cleanGallery();
+    addPictures(response.hits)
+  }
+     addPictures(response.hits);
+  }
+  catch (error) {
+    console.log(error)
   }
 
-  try {
-    if (picturesApiService.query !== '') {
-      Notiflix.Notify.success(`Hooray! We found ${response.totalHits} images.`);
-      cleanGallery();
-     addPictures(response.hits)
-    }
+  if (picturesApiService.query === '') {
 
-    if (response.totalHits === 0) {
-      cleanGallery();   
-      btnLoadMore.classList.add('is-hidden');
-      onFetchError();
-      
-    }
+    cleanGallery();
+    onFetchError();
+      return
   }
-    catch (error) {
-      console.log(error)
-    }
-  
+
   picturesApiService.resetPage();
-  
-      cleanGallery();
-      addPictures(response.hits);
-    }
+ 
+}
 
 
 function addPictures(pictures) {
@@ -93,9 +83,8 @@ btnLoadMore.addEventListener('click', onLoadMore);
 async function onLoadMore(event) {
  
   picturesApiService.page += 1;
-  const response = await picturesApiService.fetchPictures(picturesApiService.query, picturesApiService.page);
+  const response = await picturesApiService.fetchPictures();
   addPictures(response.hits);
-  currentHits += response.hits.length;
   console.log(response);
 
   const totalPages = Math.ceil(response.totalHits / 40);
