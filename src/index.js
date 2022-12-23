@@ -21,7 +21,7 @@ async function onSearch(event) {
     
   try {
     if (picturesApiService.query === '') {
-      cleanGallery();
+    cleanGallery();
     onFetchError();
     return 
   }
@@ -31,8 +31,11 @@ async function onSearch(event) {
     } else {
       btnLoadMore.classList.add('is-hidden');
     }
-    
-    if (picturesApiService.query !== '') {
+    if (response.totalHits === 0) {
+      cleanGallery();
+      onFetchError();
+    }
+    if (response.totalHits!==0) {
       Notiflix.Notify.success(`Hooray! We found ${response.totalHits} images.`);
       cleanGallery();
       addPictures(response.hits)
