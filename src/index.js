@@ -75,22 +75,25 @@ function addPictures(pictures) {
 }
 
 
-console.log(picturesApiService.query)
-
 btnLoadMore.addEventListener('click', onLoadMore);
 
 
 async function onLoadMore(event) {
  
   picturesApiService.page += 1;
-  const response = await picturesApiService.fetchPictures();
-  addPictures(response.hits);
-  console.log(response);
 
-  const totalPages = Math.ceil(response.totalHits / 40);
-  if (picturesApiService.page >= totalPages) {
-    btnLoadMore.classList.add('is-hidden');
-    alertEndOfSearch();
+  try {
+    const response = await picturesApiService.fetchPictures();
+    addPictures(response.hits);
+
+    const totalPages = Math.ceil(response.totalHits / 40);
+    if (picturesApiService.page >= totalPages) {
+      btnLoadMore.classList.add('is-hidden');
+      alertEndOfSearch();
+    }
+  }
+  catch(error) {
+    console.log(error)
   }
 }
 
