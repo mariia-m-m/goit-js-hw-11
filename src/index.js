@@ -20,7 +20,8 @@ async function onSearch(event) {
   picturesApiService.page = 1;
     
   try {
-      if (picturesApiService.query === '') {
+    if (picturesApiService.query === '') {
+      cleanGallery();
     onFetchError();
     return 
   }
