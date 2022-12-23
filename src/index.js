@@ -41,8 +41,6 @@ async function onSearch(event) {
     console.log(error)
   }
 
-
-
   picturesApiService.resetPage();
  
 }
@@ -74,7 +72,6 @@ function addPictures(pictures) {
 
 
 btnLoadMore.addEventListener('click', onLoadMore);
-
 
 async function onLoadMore(event) {
  
