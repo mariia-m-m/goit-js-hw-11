@@ -20,30 +20,31 @@ async function onSearch(event) {
   picturesApiService.page = 1;
     
   try {
-    const response = await picturesApiService.fetchPictures();
-     if (response.totalHits > 40) {
-    btnLoadMore.classList.remove('is-hidden');
-  } else {
-    btnLoadMore.classList.add('is-hidden');
-     }
-    
-  if (picturesApiService.query !== '') {
-    Notiflix.Notify.success(`Hooray! We found ${response.totalHits} images.`);
+      if (picturesApiService.query === ''.trim()) {
+
     cleanGallery();
-    addPictures(response.hits)
+    onFetchError();
+     btnLoadMore.classList.add('is-hidden');
+return 
   }
-     addPictures(response.hits);
+    const response = await picturesApiService.fetchPictures();
+    if (response.totalHits > 40) {
+      btnLoadMore.classList.remove('is-hidden');
+    } else {
+      btnLoadMore.classList.add('is-hidden');
+    }
+    
+    if (picturesApiService.query !== '') {
+      Notiflix.Notify.success(`Hooray! We found ${response.totalHits} images.`);
+      cleanGallery();
+      addPictures(response.hits)
+    }
   }
   catch (error) {
     console.log(error)
   }
 
-  if (picturesApiService.query === '') {
 
-    cleanGallery();
-    onFetchError();
-      return
-  }
 
   picturesApiService.resetPage();
  
