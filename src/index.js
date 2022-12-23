@@ -21,11 +21,8 @@ async function onSearch(event) {
     
   try {
       if (picturesApiService.query === '') {
-
-    cleanGallery();
     onFetchError();
-     btnLoadMore.classList.add('is-hidden');
-return 
+    return 
   }
     const response = await picturesApiService.fetchPictures();
     if (response.totalHits > 40) {
