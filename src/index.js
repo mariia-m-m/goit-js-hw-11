@@ -1,7 +1,9 @@
 
 import './css/styles.css';
 import Notiflix from 'notiflix';
-import PicturesApiService from './js/picture-service'
+import PicturesApiService from './js/picture-service';
+import SimpleLightbox from "simplelightbox/dist/simple-lightbox.esm";
+import "simplelightbox/dist/simple-lightbox.min.css"
 
 const gallery = document.querySelector('.gallery');
 const form = document.querySelector("#search-form");
@@ -53,7 +55,7 @@ async function onSearch(event) {
 function addPictures(pictures) {
   const markup=pictures.map(picture => {
       return `<div class="photo-card">
-  <img src="${picture.webformatURL}." alt="${picture.tags}" loading="lazy" />
+  <a href = "${picture.largeImageURL}"><img src="${picture.webformatURL}." alt="${picture.tags}" loading="lazy" /></a>
   <div class="info">
     <p class="info-item">
       <b>${picture.likes} likes</b>
@@ -71,7 +73,8 @@ function addPictures(pictures) {
 </div>`})
     .join('');
   
-  gallery.insertAdjacentHTML('beforeend', markup);
+gallery.insertAdjacentHTML('beforeend', markup);
+gallerys.refresh(); 
 }
 
 
@@ -107,3 +110,16 @@ function alertEndOfSearch(error) {
 function cleanGallery() {
   gallery.innerHTML = '';
 }
+
+const gallerys = new SimpleLightbox('.gallery a');
+gallerys.on('show.simplelightbox', {
+  animation:FormDataEvent,
+ captionDelay: 250,
+  overlayOpacity: 0.5,
+  close: true,
+  closeText:'X',
+});
+
+
+
+

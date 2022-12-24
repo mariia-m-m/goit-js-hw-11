@@ -16,17 +16,7 @@ export default class PicturesApiService {
         const response = await axios.get(`${BASE_URL}${filter}`);
          return response.data;
 }
-
-
-    // async fetchPictures() {
-    // const response = await fetch(`${BASE_URL}?key=${API_KEY}&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${this.page}`);
-    //     const fetchedPictures = await response.json();
-    //     const pictures = fetchedPictures.hits;
-    //     return pictures;
-       
-    
-    // }
-    
+   
    
     
 get query(){
