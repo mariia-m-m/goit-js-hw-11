@@ -2,7 +2,7 @@
 import './css/styles.css';
 import Notiflix from 'notiflix';
 import PicturesApiService from './js/picture-service';
-import SimpleLightbox from "simplelightbox/dist/simple-lightbox.esm";
+import SimpleLightbox from "simplelightbox"
 import "simplelightbox/dist/simple-lightbox.min.css"
 
 const gallery = document.querySelector('.gallery');
@@ -17,10 +17,10 @@ btnLoadMore.classList.add('is-hidden')
 form.addEventListener("submit", onSearch);
 
 async function onSearch(event) {
+
   event.preventDefault();
   picturesApiService.query = event.currentTarget.elements.searchQuery.value.trim();
   picturesApiService.page = 1;
-    
   try {
     if (picturesApiService.query === '') {
     cleanGallery();
@@ -40,7 +40,9 @@ async function onSearch(event) {
     if (response.totalHits!==0) {
       Notiflix.Notify.success(`Hooray! We found ${response.totalHits} images.`);
       cleanGallery();
-      addPictures(response.hits)
+      addPictures(response.hits);
+      lightbox.refresh();
+     
     }
   }
   catch (error) {
@@ -74,7 +76,7 @@ function addPictures(pictures) {
     .join('');
   
 gallery.insertAdjacentHTML('beforeend', markup);
-gallerys.refresh(); 
+
 }
 
 
@@ -111,13 +113,12 @@ function cleanGallery() {
   gallery.innerHTML = '';
 }
 
-const gallerys = new SimpleLightbox('.gallery a');
-gallerys.on('show.simplelightbox', {
-  animation:FormDataEvent,
+const lightbox = new SimpleLightbox('.gallery a',{
+  animation: FormDataEvent,
  captionDelay: 250,
   overlayOpacity: 0.5,
   close: true,
-  closeText:'X',
+  closeText:'x',
 });
 
 
